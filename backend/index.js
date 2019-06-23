@@ -1,9 +1,13 @@
+// now-env is used to obtain now secrets
 require('now-env');
 
+// Import required libraries to handle upload
+// AWS S3 is used in this implementation
 const aws = require('aws-sdk')
 const multer = require('multer')
 const multerS3 = require('multer-s3')
 
+// Create an S3 object with relevant authentication
 const s3 = new aws.S3({
   // env variables provide security tokens
   accessKeyId: process.env.AWS_ACCESSKEY_ID,
@@ -13,7 +17,7 @@ const s3 = new aws.S3({
   useAccelerateEndpoint: true,
 });
 
-// Initialize multer-s3 with s3 config and other options
+// Initialize multer-s3 with S3 object (above) and other options
 const upload = multer({
   storage: multerS3({
     s3,
@@ -29,23 +33,27 @@ const upload = multer({
   })
 })
 
+// Bucket parameters
 var bucketParams = {
   Bucket : process.env.AWS_BUCKET,
 };
 
-// Expose the /upload endpoint
+// Expose the endpoint using express and http
 const app = require('express')();
 const http = require('http').Server(app);
+
+// bodyParser is needed to parse forms
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
-// app.use(bodyParser.json());
 
+// Root route to ensure backend is deployed correctly
 app.get('/', (req, res) => {
   res.send(200, 'Hi');
 })
 
+// List objects on S3 bucket at the /list route
 app.get('/items', (req, res) => {
   s3.listObjects(bucketParams, function(err, data) {
     if (err) {
@@ -56,6 +64,8 @@ app.get('/items', (req, res) => {
   });
 })
 
+// Route to obtain pre-signed URL
+// Used to upload JSON file containing information about user exercise
 app.post('/generatepresignedurl', function(req,res){
   var fileurls = [];
   /*setting the presigned url expiry time in seconds */
@@ -74,6 +84,8 @@ app.post('/generatepresignedurl', function(req,res){
   });
 });
 
+// Route to obtain pre-signed POST parameters
+// Used to upload participant video file
 app.post('/createpresignedpost', function(req,res){
   var response = [];
   /*setting the presigned url expiry time in seconds */
@@ -102,12 +114,15 @@ app.post('/createpresignedpost', function(req,res){
 });
 
 // POST handler for upload endpoint to upload videos
+// Deprecated due to 10s execution time restriction on Now
 // Uploading is handled simply by upload.single('video')
 // ('video' is the name of the key in the multipart formdata)
 app.post('/upload', upload.single('video'), (req, res, next) => {
   res.json(req.file);
 })
 
+// POST handler for upload endpoint to upload json file
+// Also deprecated to follow similar method used for video file
 app.post('/upload-json', (req, res) => {
   // res.send(req.body);
   var uploadParams = { Bucket: process.env.AWS_BUCKET, Key: req.body.name + '.json', Body: JSON.stringify(req.body), ContentType: 'application/json' };

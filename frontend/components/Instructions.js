@@ -1,8 +1,11 @@
+// Import relevant RN components
 import React , {Component} from 'react';
 import { View, Text, Image, Dimensions } from 'react-native';
+// We use the AppIntroSlider component for our instructions page
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { StackActions, NavigationActions } from 'react-navigation';
 
+// 'Slides' that display the instructions for the app
 const slides = [
   {
     key: 'inst0',
@@ -41,12 +44,17 @@ const slides = [
   }
 ];
 
+// Instructions component informs the participant on how to complete the exercise
+// Further, we also ask the participant to take certain precautions in ensuring that
+// the data is accurate.
 export default class Instructions extends Component {
+  // Define a render item function that is used to render each slide
   _renderItem = (item) => {
     return (
       <View style={styles.appContainer}>
         <View style={styles.container}>
           <Text style={styles.title}>{item.title}</Text>
+          {/* For the inst1 slide, we have no image to display, and so we set the dims to zero for this slide */}
           <Image style={[styles.image, (item.key=='inst1')?{height: 0, borderWidth: 0}:{}]} source={item.image} />
           <Text style={styles.description}>{item.text}</Text>
         </View>
@@ -55,14 +63,17 @@ export default class Instructions extends Component {
   }
   _onDone = () => {
     // User finished the introduction. Show passages
+    // Use the reset action to prevent the back button from
+    // being used when the participant is doing the task
     const resetAction = StackActions.reset({
-      index: 0, // <-- currect active route from actions array
+      index: 0, // currect active route from actions array
       actions: [
         NavigationActions.navigate({"routeName": "Passage"}),
       ],
     });
     this.props.navigation.dispatch(resetAction);
   }
+  // Render the AppIntroSlider component using the above helper functions
   render() {
     return (
       <AppIntroSlider 
@@ -80,8 +91,10 @@ export default class Instructions extends Component {
   }
 }
 
+// Width and height are used for styling
 const { width , height } = Dimensions.get('window');
 
+// Stylesheet used to style our components 
 const styles = {
   appContainer: {
     flex: 1,
@@ -93,8 +106,6 @@ const styles = {
     flex: 1,
     margin: 30,
     alignItems: 'center',
-    // justifyContent: 'center'
-    // backgroundColor: 'yellow'
   },
   image: {
     height: height * 0.3,

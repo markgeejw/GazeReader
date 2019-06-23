@@ -1,12 +1,20 @@
+// Import relevant RN components
 import React , {Component} from 'react';
 import { View, Text, ScrollView, Dimensions, TouchableOpacity, Platform, KeyboardAvoidingView } from 'react-native';
 
+// Function to check if ScrollView component is scrolled to the bottom
+// Credits to https://medium.com/@luisbajana/react-native-terms-and-conditions-component-6970c713016e
 const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
     const paddingToBottom = 20;
     return layoutMeasurement.height + contentOffset.y >=
         contentSize.height - paddingToBottom;
 };
 
+// DataAndPrivacy component is the Agreements page
+// It informs the participant what the data is used for and
+// how the data is kept. It assures them that data is deleted at
+// the end of the project
+// See the report appendices for the agreement
 export default class DataAndPrivacy extends Component{
   state = {
     enabled: false,
@@ -16,11 +24,16 @@ export default class DataAndPrivacy extends Component{
   render(){
     return (
       <View style={styles.appContainer}>
+        {/* KeyboardAvoidingView comes from an older version where a user had to type in their name to agree and continue.
+            This is no longer done to preserve anonymity. Instead, we use the scroll function above to ensure the 
+            user reads the agreement */}
         <KeyboardAvoidingView style={styles.container} behavior='padding'>
           <Text style={styles.title}>First things first</Text>
           <Text style={styles.description}>Please read the following information and agreement. By tapping 'Agree and Continue', you are giving consent to the following agreement.</Text>
           <ScrollView 
-            style={styles.tcContainer}            
+            style={styles.tcContainer}  
+            // onScroll event listener that calls the isCloseToBottom function whenever
+            // component is scrolled. If close to bottom, set button to enabled using the state 
             onScroll={({nativeEvent}) => {
               if (isCloseToBottom(nativeEvent)) {
                 this.setState({
@@ -28,6 +41,7 @@ export default class DataAndPrivacy extends Component{
                 })
               }
             }}
+            // throttling is needed to use onScroll
             scrollEventThrottle={500}>
             <Text style={styles.tcTitle}>Gaze Reader Usage Agreement</Text>
             <Text style={styles.tcP}>Welcome to Gaze Reader, an application used to collect data for a student research project.</Text>
@@ -38,7 +52,8 @@ export default class DataAndPrivacy extends Component{
             <Text style={styles.tcL}>{'\u2022'} Other supplementary data that could be useful to preprocess the data, including duration of exercises and size of used device will be recorded as well.</Text>
             <Text style={[styles.tcP, {marginBottom: 50}]}>The use of this application is described by the above details. Once again, rest assure that your data will be completely erased with no means of retrieving it within a month (July 2019).</Text>
           </ScrollView>
-          {/* <TextInput
+          {/* DEPRECATED AS DESCRIBED ABOVE
+          <TextInput
             style={styles.input}
             placeholder="Enter name"
             onChangeText={(text) => {
@@ -49,6 +64,8 @@ export default class DataAndPrivacy extends Component{
               }
             }}
           /> */}
+          {/* Button that is enabled only after reading agreement 
+              Navigate to Permissions page on press*/}
           <TouchableOpacity disabled={ !this.state.enabled } onPress={ ()=> this.props.navigation.navigate('Permissions') } style={ this.state.enabled ? styles.button : styles.buttonDisabled }><Text style={styles.buttonLabel}>Agree and Continue</Text></TouchableOpacity>
         </KeyboardAvoidingView>
       </View>

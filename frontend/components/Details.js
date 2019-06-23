@@ -1,6 +1,8 @@
+// Import relevant RN components
 import React , {Component} from 'react';
 import { View, Text, ScrollView } from 'react-native';
 
+// The Details page gives in-depth information about the app
 export default class Details extends Component{
 
   render() {
@@ -26,16 +28,13 @@ const styles = {
     justifyContent: 'center',
   },
   container: {
-    // width: 700,
     marginHorizontal: 50,
-    // flex: 1,
     contentContainerStyle: {
       justifyContent: 'center',
       alignItems: 'center'
     },
     marginBottom: 30,
     paddingRight: 10
-    // backgroundColor: 'yellow'
   },
   title: {
     alignSelf: 'center',

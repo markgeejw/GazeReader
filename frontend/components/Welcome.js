@@ -1,11 +1,9 @@
+// Import relevant RN components
 import React , {Component} from 'react';
 import { View, Text, Image, Button, TouchableOpacity } from 'react-native';
 
+// Simple Welcome page to welcome the user
 export default class Welcome extends Component{
-  state = {
-
-  }
-
   render() {
     return (
       <View style={styles.appContainer}>
@@ -17,15 +15,15 @@ export default class Welcome extends Component{
           <TouchableOpacity style={styles.ctnbtn} onPress={() => this.props.navigation.navigate('Data')}>
             <Text style={styles.ctnbtntext}>Continue</Text>
           </TouchableOpacity>
+          {/* We use a Text component as a button to allow it to look the same on Android and iOS */}
           <Text style={styles.details} onPress={() => this.props.navigation.navigate('Details')}>Tell me more</Text>
-          {/* <Button title='Tell me more'
-            onPress={() => this.props.navigation.navigate('Details')}/> */}
         </View>
       </View>
     )
   }
 }
 
+// Stylesheet to style our components
 const styles = {
   appContainer: {
     flex: 1,
@@ -34,13 +32,9 @@ const styles = {
     justifyContent: 'center'
   },
   container: {
-    // width: 700,
-    // marginTop: 50,
-    // flex: 1,
     margin: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: 'yellow'
   },
   icon: {
     width: 192,
