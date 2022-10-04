@@ -10,7 +10,7 @@
     "box-node-sdk": "^1.29.0",
     "buffer": "^5.2.1",
     "delay": "^4.2.0",
-    "expo": "^32.0.0",
+    "expo": "^46.0.14",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-app-intro-slider": "^2.0.1",
